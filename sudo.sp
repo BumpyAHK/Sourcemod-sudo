@@ -14,14 +14,14 @@ public Plugin myinfo =
 };
 
 
-public OnPluginStart ()
+public OnPluginStart()
 {
-    CreateConVar ("sm_sudo_version", PLUGIN_VERSION, "sudo version", FCVAR_SPONLY | FCVAR_REPLICATED | FCVAR_NOTIFY);
+    CreateConVar("sm_sudo_version", PLUGIN_VERSION, "sudo version", FCVAR_SPONLY | FCVAR_REPLICATED | FCVAR_NOTIFY);
     /* register the sm_cexec console command */
-    RegAdminCmd ("sm_sudo", ClientExec, ADMFLAG_RCON);
+    RegAdminCmd("sm_sudo", ClientExec, ADMFLAG_RCON);
 }
 
-public Action ClientExec (client, args)
+public Action ClientExec(client, args)
 {
     char szClient[MAX_NAME_LENGTH] = "";
     char szCommand[80] = "";
@@ -29,46 +29,45 @@ public Action ClientExec (client, args)
 
     iMaxClients = MaxClients;
 
-    if (args == 2)
+    if(args == 2)
     {
-        GetCmdArg (1, szClient, sizeof (szClient));
-        GetCmdArg (2, szCommand, sizeof (szCommand));
+        GetCmdArg(1, szClient, sizeof(szClient));
+        GetCmdArg(2, szCommand, sizeof(szCommand));
 
-        if (!strcmp (szClient, "#all", false))
+        if(!strcmp(szClient, "#all", false))
         {
-            for (iClient = 1; iClient <= iMaxClients; iClient++)
+            for(iClient = 1; iClient <= iMaxClients; iClient++)
             {
-                if (IsClientConnected (iClient) && IsClientInGame (iClient))
+                if(IsClientConnected(iClient) && IsClientInGame(iClient))
                 {
-                    if (IsFakeClient (iClient))
-                        FakeClientCommand (iClient, szCommand);
+                    if(IsFakeClient (iClient))
+                        FakeClientCommand(iClient, szCommand);
                     else
-                        ClientCommand (iClient, szCommand);
+                        ClientCommand(iClient, szCommand);
                 }
             }
         }
-        else if (!strcmp (szClient, "#bots", false))
+        else if(!strcmp (szClient, "#bots", false))
         {
-            for (iClient = 1; iClient <= iMaxClients; iClient++)
+            for(iClient = 1; iClient <= iMaxClients; iClient++)
             {
-                if (IsClientConnected (iClient) && IsClientInGame (iClient) && IsFakeClient (iClient))
-                    FakeClientCommand (iClient, szCommand);
+                if (IsClientConnected(iClient) && IsClientInGame(iClient) && IsFakeClient(iClient))
+                    FakeClientCommand(iClient, szCommand);
             }
         }
-        else if ((iClient = FindTarget (client, szClient, false, true)) != -1)
+        else if((iClient = FindTarget(client, szClient, false, true)) != -1)
         {
-            if (IsFakeClient (iClient))
-                FakeClientCommand (iClient, szCommand);
+            if (IsFakeClient(iClient))
+                FakeClientCommand(iClient, szCommand);
             else
-                ClientCommand (iClient, szCommand);
+                ClientCommand(iClient, szCommand);
         }
     }
     else
     {
-        ReplyToCommand (client, "sm_sudo invalid format");
-        ReplyToCommand (client, "Usage: sm_sudo \"<user>\" \"<command>\"");
+        ReplyToCommand(client, "sm_sudo invalid format");
+        ReplyToCommand(client, "Usage: sm_sudo \"<user>\" \"<command>\"");
     }
 
     return Plugin_Handled;
 }
-
